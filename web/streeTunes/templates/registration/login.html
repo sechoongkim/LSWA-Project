@@ -1,0 +1,12 @@
+{% extends "web/base.html" %}
+{% block content %}
+
+<h1>This is login</h1>
+
+<form action="/streeTunes/login/" method="post">
+  {% csrf_token %}
+  <input type='text' name='username' />
+  <input type='password' name='password' />
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
