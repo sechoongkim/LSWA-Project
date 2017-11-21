@@ -13,21 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from . import views
+from django.contrib.auth import views as auth_views
+
 
 ENCRYPTION_KEY_LENGTH = 26
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^scan/$', views.scan, name='scan'),
-    url(r'^download/(?P<downloadKey>\w{' + str(ENCRYPTION_KEY_LENGTH) + '})/$', views.download, name='download'),
-    url(r'^login/$', views.login, name='login'),
+    url(r'^download/$', views.download, name='download'),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^profile/$', views.profile, name='profile'),
-    url(r'^dashboard/$', views.dashboard, name='dashboard')
+    url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url('^', include('django.contrib.auth.urls'))
 ]
 
 
