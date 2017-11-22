@@ -1,7 +1,7 @@
-<<<<<<< HEAD
 node_modules/
 .DS_Store
 =======
-__pycache__/
-
->>>>>>> LF-6 added gitignore
+*.pyc
+env/*
+migrations/
+>>>>>>> TR-6 Edit gitignore
