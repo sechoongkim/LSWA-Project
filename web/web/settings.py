@@ -123,3 +123,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = '/uploads/'
+
+LOGIN_URL = '/streeTunes/login/'
+LOGIN_REDIRECT_URL = '/streeTunes/dashboard'
