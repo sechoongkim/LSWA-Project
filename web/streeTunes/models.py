@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
+from django.contrib.auth.forms import UserCreationForm
+
 
 class Profile(models.Model):
     """
@@ -17,6 +19,9 @@ class Profile(models.Model):
     age = models.IntegerField(null=True, default=None)
     genre = models.CharField(max_length=10, null=True, default=None)
     pass
+
+
+
 
 #########################################################
 # This block of code was taken from:
