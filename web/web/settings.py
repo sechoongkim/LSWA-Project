@@ -135,7 +135,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = 'uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 LOGIN_URL = '/streeTunes/login/'
 LOGIN_REDIRECT_URL = '/streeTunes/dashboard'
