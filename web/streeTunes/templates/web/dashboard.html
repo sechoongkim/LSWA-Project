@@ -2,4 +2,40 @@
 
 {% block content %}
     <h1>Welcome {{user.username}}</h1>
+    <a href= {% url 'streeTunes:upload' %}><button>Upload Music</button></a>
+    <a href= {% url 'streeTunes:genqr' %}><button>Generate QR code </button></a>
+
+    <h3>Create Album</h3>
+    <form action="/streeTunes/create-album/" method="POST">
+        {% csrf_token %}
+        <input type='text' name='title' maxlength="50" placeholder="Title"/>
+        <input type='submit'>
+    </form>
+
+    <h3>Upload Songs</h3>
+    <form action='/streeTunes/upload/' method='POST' enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type='text' name='title' placeholder="Title"/>
+        <select name='album_id'>
+            {% for album in data %}
+            <option value='{{album.album_id}}'>{{album.title}}</option>
+            {% endfor %}
+        </select>
+        <input type='file' name='media'/>
+        <input type='submit'>
+    </form>
+    <div class='all_songs'>
+        {% for album in data %}
+        <section class='ablum'>
+            <h2>{{album.title}}</h2>
+            <button>Remove Album</button>
+            {% for song in album.songs %}
+                <div class='song'>
+                    <h3>{{song.title}}</h3>
+                    <button>Remove Song</button>
+                </div>
+            {% endfor %}
+        </section>
+        {% endfor %}
+    </div>
 {% endblock %}
