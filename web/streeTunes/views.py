@@ -2,8 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
-from .models import User, Profile, Purchase, Album, UploadFileForm, Song, CreateAlbumForm
+from .models import User, Profile, Purchase, Album, Song, CreateAlbumForm, UploadFileForm, UserCreationForm
 import uuid
+from zipfile import *
+import os
+from django.conf import settings
 
 # Create your views here.
 def index(request):
@@ -12,8 +15,23 @@ def index(request):
 def scan(request):
     return render(request, 'web/scan.html')
 
-def download(request, downloadKey):
-    return HttpResponse("this is download: dlkey={key}".format(key=downloadKey))
+def download(request):
+    downloadKey = request.GET['dl']
+    purchase_record = get_object_or_404(Purchase, purchase_id= downloadKey, fulfilled = False)
+    album = purchase_record.album_id
+    songs = Song.objects.filter(album_id=album.album_id)
+
+    filename = album.title+'.zip'
+    zip_file = ZipFile(filename, "w")
+    for song in songs:
+        song_loc = os.path.join(settings.MEDIA_ROOT, str(song.media))
+        zip_file.write(song_loc, song_loc.split('/')[-1])
+        pass
+    zip_file.close()
+
+    response = HttpResponse(open(filename, 'rb').read(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="{filename}"'.format(filename=filename)
+    return response
 
 def signup(request):
     user_form = UserCreationForm
