@@ -48,24 +48,6 @@ def save_user_profile(sender, instance, **kwargs):
 
 #######################################################
 
-class Purchase(models.Model):
-    """
-        Purchase model represents a potential download.
-            An entry is created on every QR code generation.
-        * purchase_id is a 32 character key. The first 16 is the album_id this purchase points to
-        * musician_id is a ForeignKey pointing to a musician Profile
-        * longitude and latitude stores information about where the purchase was generated
-            (location of end user)
-        * time stores information about when the purchase was generated
-        * fulfilled shows if a purchase was completed (ie. end user downloaded the album)
-    """
-    purchase_id = models.CharField(max_length=32, primary_key=True)
-    musician_id = models.ForeignKey(Profile)
-    time = models.DateTimeField()
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    fulfilled = models.BooleanField(default=False)
-    pass
 
 class Album(models.Model):
     """
@@ -84,13 +66,33 @@ class CreateAlbumForm(ModelForm):
         pass
     pass
 
+class Purchase(models.Model):
+    """
+        Purchase model represents a potential download.
+            An entry is created on every QR code generation.
+        * purchase_id is a 32 character key. The first 16 is the album_id this purchase points to
+        * musician_id is a ForeignKey pointing to a musician Profile
+        * longitude and latitude stores information about where the purchase was generated
+            (location of end user)
+        * time stores information about when the purchase was generated
+        * fulfilled shows if a purchase was completed (ie. end user downloaded the album)
+    """
+    purchase_id = models.CharField(max_length=32, primary_key=True)
+    musician_id = models.ForeignKey(Profile, related_name='musician_of_purchase')
+    album_id = models.ForeignKey(Album, related_name='album_of_purchase')
+    time = models.DateTimeField(auto_now_add=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    fulfilled = models.BooleanField(default=False)
+    pass
+
 #########################################################################################################
 
 def user_directory_path(instance, filename):
     """
         file will be uploaded to MEDIA_ROOT/<musician_id>/<album_id>/<filename>
     """
-    return '{0}/{1}/{2}'.format(instance.musician_id.musician_id, instance.song_id[0:16], filename)
+    return '{0}/{1}/{2}/{3}'.format(instance.musician_id.musician_id, instance.album_id.album_id, instance.song_id, instance.title+"."+filename.split('.')[-1])
 
 
 class Song(models.Model):
@@ -101,9 +103,9 @@ class Song(models.Model):
         * media is a fileField that
     """
     song_id = models.CharField(max_length=32, primary_key=True)
-    album_id = models.ForeignKey(Album, related_name='album')
+    album_id = models.ForeignKey(Album, related_name='album_of_song')
     title = models.CharField(max_length=50)
-    musician_id = models.ForeignKey(Profile, related_name='musician')
+    musician_id = models.ForeignKey(Profile, related_name='musician_of_song')
     media = models.FileField(upload_to=user_directory_path)
     pass
 
