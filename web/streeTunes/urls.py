@@ -29,6 +29,9 @@ urlpatterns = [
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^profile/$', views.profile, name='profile'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^create-album/$', views.create_album, name='genqr'),
+    url(r'^upload/$', views.upload, name='upload'),
+    url(r'^genqr/$', views.genqr, name='genqr'),
     url('^', include('django.contrib.auth.urls'))
 ]
 
