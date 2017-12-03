@@ -112,7 +112,7 @@ def create_album(request):
 
     if form.is_valid():
         form.save()
-        return HttpResponse('success')
+        return redirect('/streeTunes/dashboard/')
     else:
         # Error
         print(form.errors)
@@ -137,7 +137,7 @@ def upload(request):
 
         if form.is_valid():
             form.save()
-            return HttpResponse('success')
+            return redirect('/streeTunes/dashboard/')
         else:
             #Error
             print(form.errors)
