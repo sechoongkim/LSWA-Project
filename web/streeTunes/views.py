@@ -157,5 +157,28 @@ def upload(request):
 
 @login_required
 def genqr(request):
-    return render(request, 'genqr.html')
+    if request.method == 'POST':
+        musician = request.user.profile
+        purchase_id = uuid.uuid4().hex
+        while(Purchase.objects.filter(purchase_id=purchase_id).exists()):
+            purchase_id = uuid.uuid4().hex
+            pass
+        album = Album.objects.get(album_id=request.POST['album_id'])
+        longitude = request.POST['longitude']
+        latitude = request.POST['latitude']
+        try:
+            p = Purchase(musician_id=musician, purchase_id=purchase_id, album_id=album, longitude=longitude, latitude=latitude)
+            p.save()
+        except:
+            return HttpResponse('failed')
+
+        return redirect('/streeTunes/qr/{pid}'.format(pid=purchase_id))
+    else:
+        return HttpResponseNotFound()
+
+
+def qr(request, pid):
+    if(pid is None):
+        return HttpResponseNotFound()
+    return HttpResponse(pid)
 
