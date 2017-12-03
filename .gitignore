@@ -1,7 +1,5 @@
 node_modules/
 .DS_Store
-=======
 *.pyc
 env/*
 migrations/
->>>>>>> TR-6 Edit gitignore
