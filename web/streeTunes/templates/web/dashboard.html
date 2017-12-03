@@ -3,7 +3,6 @@
 {% block content %}
     <h1>Welcome {{user.username}}</h1>
     <a href= {% url 'streeTunes:upload' %}><button>Upload Music</button></a>
-    <a href= {% url 'streeTunes:genqr' %}><button>Generate QR code </button></a>
 
     <h3>Create Album</h3>
     <form action="/streeTunes/create-album/" method="POST">
@@ -36,6 +35,45 @@
                 </div>
             {% endfor %}
         </section>
+        <form action='/streeTunes/genqr/' id='{{album.album_id}}' method="POST">
+            {% csrf_token %}
+            <input type='hidden' value='{{album.album_id}}' name='album_id'/>
+            <input type='number' step="0.0000001" class="longitude" name='longitude' hidden/>
+            <input type='number' step="0.0000001" class="latitude" name='latitude' hidden/>
+            <input type='button' value='Generate QR code' onclick="getLocationConstant('{{album.album_id}}')"/>
+        </form>
         {% endfor %}
     </div>
+
+    <script>
+    'use strict'
+    let form, longitude, latitude
+
+    function getLocationConstant(form_id) {
+        form = document.getElementById(form_id)
+        longitude = form.getElementsByClassName("longitude")[0]
+        latitude = form.getElementsByClassName("latitude")[0]
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+        } else {
+            alert("Your browser or device doesn't support Geolocation");
+        }
+    }
+
+    // If we have a successful location update
+    function onGeoSuccess(event) {
+        latitude.value = event.coords.latitude;
+        longitude.value = event.coords.longitude;
+        form.submit()
+    }
+
+    // If something has gone wrong with the geolocation request
+    function onGeoError(event) {
+        alert("Error code " + event.code + ". " + event.message);
+    }
+
+    </script>
 {% endblock %}
+
+
