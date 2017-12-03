@@ -2,7 +2,6 @@
 
 {% block content %}
     <h1>Welcome {{user.username}}</h1>
-    <a href= {% url 'streeTunes:upload' %}><button>Upload Music</button></a>
 
     <h3>Create Album</h3>
     <form action="/streeTunes/create-album/" method="POST">
@@ -23,6 +22,7 @@
         <input type='file' name='media'/>
         <input type='submit'>
     </form>
+
     <div class='all_songs'>
         {% for album in data %}
         <section class='ablum'>
@@ -44,6 +44,7 @@
         </form>
         {% endfor %}
     </div>
+
 
     <script>
     'use strict'
