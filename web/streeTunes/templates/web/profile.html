@@ -1,0 +1,27 @@
+{% extends "web/base.html" %}
+
+{% block content %}
+    <h1>Welcome {{username}}</h1>
+    <h2>Current profile:</h2>
+    {% if profile %}
+        <li>Gender: {{profile.gender}}</li>
+        <li>Genre: {{profile.genre}}</li>
+        <li>Age: {{profile.age}}</li>
+    {% endif %}
+
+    <form action='/streeTunes/profile/' method='post'>
+        {% csrf_token %}
+
+        <h2>Upadte your profile:</h2>
+        <input type="radio" name="gender" value="Male">Male</radio>
+        <input type="radio" name="gender" value="Female">Female</radio>
+        <input type="number" max="100" min="0" name='age' placeholder="age" />
+        <select name="genre">
+            <option {% if profile.genre == "jazz" %} selected {% endif %} value="jazz">jazz</option>
+            <option {% if profile.genre == "blues" %} selected {% endif %} value="blues">blues</option>
+            <option {% if profile.genre == "classical" %} selected {% endif %} value="classical">classical</option>
+            <option {% if profile.genre == "pop" %} selected {% endif %} value="pop">pop</option>
+        </select>
+        <input type="submit" value="save"/>
+    </form>
+{% endblock %}

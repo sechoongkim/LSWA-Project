@@ -1,0 +1,36 @@
+{% extends "web/base.html" %}
+
+{% block header %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static 'js/instascan.min.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+<video id="preview"></video>
+<p id='content'></p>
+<script type="text/javascript">
+  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+  scanner.addListener('scan', function (content) {
+    console.log(content);
+    DOWNLOAD_PATH = '{% url "streeTunes:download" %}?dl='
+    document.getElementById('content').innerHTML = "Click the <a href='"+DOWNLOAD_PATH+content+"'>HERE</a> to download"
+  });
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[0]);
+    } else {
+      console.error('No cameras found.');
+    }
+  }).catch(function (e) {
+    console.error(e);
+  });
+</script>
+
+{% endblock %}
+
+{% block footer %}
+    QR Scanner From github https://github.com/schmich/instascan
+{% endblock %}

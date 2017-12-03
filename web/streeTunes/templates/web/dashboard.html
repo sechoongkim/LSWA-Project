@@ -1,0 +1,80 @@
+{% extends "web/base.html" %}
+
+{% block content %}
+    <h1>Welcome {{user.username}}</h1>
+
+    <h3>Create Album</h3>
+    <form action="/streeTunes/create-album/" method="POST">
+        {% csrf_token %}
+        <input type='text' name='title' maxlength="50" placeholder="Title"/>
+        <input type='submit'>
+    </form>
+
+    <h3>Upload Songs</h3>
+    <form action='/streeTunes/upload/' method='POST' enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type='text' name='title' placeholder="Title"/>
+        <select name='album_id'>
+            {% for album in data %}
+            <option value='{{album.album_id}}'>{{album.title}}</option>
+            {% endfor %}
+        </select>
+        <input type='file' name='media'/>
+        <input type='submit'>
+    </form>
+
+    <div class='all_songs'>
+        {% for album in data %}
+        <section class='ablum'>
+            <h2>{{album.title}}</h2>
+            <button>Remove Album</button>
+            {% for song in album.songs %}
+                <div class='song'>
+                    <h3>{{song.title}}</h3>
+                    <button>Remove Song</button>
+                </div>
+            {% endfor %}
+        </section>
+        <form action='/streeTunes/genqr/' id='{{album.album_id}}' method="POST">
+            {% csrf_token %}
+            <input type='hidden' value='{{album.album_id}}' name='album_id'/>
+            <input type='number' step="0.0000001" class="longitude" name='longitude' hidden/>
+            <input type='number' step="0.0000001" class="latitude" name='latitude' hidden/>
+            <input type='button' value='Generate QR code' onclick="getLocationConstant('{{album.album_id}}')"/>
+        </form>
+        {% endfor %}
+    </div>
+
+
+    <script>
+    'use strict'
+    let form, longitude, latitude
+
+    function getLocationConstant(form_id) {
+        form = document.getElementById(form_id)
+        longitude = form.getElementsByClassName("longitude")[0]
+        latitude = form.getElementsByClassName("latitude")[0]
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+        } else {
+            alert("Your browser or device doesn't support Geolocation");
+        }
+    }
+
+    // If we have a successful location update
+    function onGeoSuccess(event) {
+        latitude.value = event.coords.latitude;
+        longitude.value = event.coords.longitude;
+        form.submit()
+    }
+
+    // If something has gone wrong with the geolocation request
+    function onGeoError(event) {
+        alert("Error code " + event.code + ". " + event.message);
+    }
+
+    </script>
+{% endblock %}
+
+

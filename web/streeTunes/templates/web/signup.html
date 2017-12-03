@@ -1,0 +1,15 @@
+{% extends "web/base.html" %}
+{% block content %}
+
+<h1>This is signup</h1>
+
+{% if error %}
+    <p>{{error}}</p>
+{% endif %}
+
+<form action="/streeTunes/signup/" method="post">
+  {% csrf_token %}
+  {{ form.as_table }}
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}

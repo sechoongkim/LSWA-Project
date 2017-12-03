@@ -17,6 +17,6 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^index/', include('streeTunes.urls')),
+    url(r'^streeTunes/', include('streeTunes.urls', namespace="streeTunes")),
     url(r'^admin/', admin.site.urls),
 ]

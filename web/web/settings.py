@@ -76,6 +76,16 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# Database
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django.db.backends.mysql',
+#     'OPTIONS': {
+#       'read_default_file': os.path.join(BASE_DIR, '..', 'LSWA-Project', 'db', 'my.cnf'),
+#     },
+#   }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -102,7 +112,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -122,4 +135,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+ZIP_ROOT = os.path.join(BASE_DIR, 'zips')
+
+LOGIN_URL = '/streeTunes/login/'
+LOGIN_REDIRECT_URL = '/streeTunes/dashboard'
