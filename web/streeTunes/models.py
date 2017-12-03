@@ -90,7 +90,7 @@ class Purchase(models.Model):
 
 def user_directory_path(instance, filename):
     """
-        file will be uploaded to MEDIA_ROOT/<musician_id>/<album_id>/<filename>
+        file will be uploaded to MEDIA_ROOT/<musician_id>/<album_id>/<song_id>/<filename>
     """
     return '{0}/{1}/{2}/{3}'.format(instance.musician_id.musician_id, instance.album_id.album_id, instance.song_id, instance.title+"."+filename.split('.')[-1])
 
