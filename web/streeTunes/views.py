@@ -7,6 +7,8 @@ import uuid
 from zipfile import *
 import os
 from django.conf import settings
+import hashlib
+
 
 # Create your views here.
 def index(request):
@@ -17,21 +19,17 @@ def scan(request):
 
 def download(request):
     downloadKey = request.GET['dl']
-    purchase_record = get_object_or_404(Purchase, purchase_id= downloadKey, fulfilled = False)
-    album = purchase_record.album_id
-    songs = Song.objects.filter(album_id=album.album_id)
-
-    filename = album.title+'.zip'
-    zip_file = ZipFile(filename, "w")
-    for song in songs:
-        song_loc = os.path.join(settings.MEDIA_ROOT, str(song.media))
-        zip_file.write(song_loc, song_loc.split('/')[-1])
-        pass
-    zip_file.close()
-
-    response = HttpResponse(open(filename, 'rb').read(), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="{filename}"'.format(filename=filename)
-    return response
+    purchase_record = get_object_or_404(Purchase, _id= downloadKey)
+    album_name = purchase_record.album_id.title
+    if purchase_record.fulfilled:
+        return HttpResponse('Sorry, looks like this download link as already expired.')
+    else:
+        filename = os.path.join(settings.ZIP_ROOT, purchase_record.musician_id.musician_id, purchase_record.album_id._id, purchase_record.version_hash+'.zip')
+        response = HttpResponse(open(filename, 'rb').read(), content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename="{filename}"'.format(filename=album_name+'.zip')
+        purchase_record.fulfilled = True
+        purchase_record.save()
+        return response
 
 def signup(request):
     user_form = UserCreationForm
@@ -98,8 +96,8 @@ def dashboard(request):
     data = []
     albums = Album.objects.filter(musician_id=musician_id)
     for album in albums:
-        songs = Song.objects.filter(musician_id=musician_id, album_id=album.album_id)
-        data.append({"album_id": album.album_id, "title": album.title, "songs": songs})
+        songs = Song.objects.filter(musician_id=musician_id, album_id=album._id)
+        data.append({"album_id": album._id, "title": album.title, "songs": songs})
 
     return render(request, 'web/dashboard.html', {"data": data})
 
@@ -109,11 +107,8 @@ def create_album(request):
         return HttpResponseNotFound()
 
     musician_id = request.user.profile.musician_id
-    album_id = uuid.uuid4().hex[0:16]
-    while(Album.objects.filter(album_id=album_id).exists()):
-        album_id = uuid.uuid4().hex[0:16]
-        pass
-    form = CreateAlbumForm({'musician_id':musician_id, 'album_id':album_id, 'title': request.POST['title']})
+    album_id = findId(Album, 16)
+    form = CreateAlbumForm({'musician_id':musician_id, '_id':album_id, 'title': request.POST['title']})
 
     if form.is_valid():
         form.save()
@@ -131,15 +126,12 @@ def upload(request):
         return render(request, 'web/upload', {'form': form})
     else:
         musician_id = request.user.profile.musician_id
-        song_id = uuid.uuid4().hex
-        while(Song.objects.filter(song_id=song_id).exists()):
-            song_id = uuid.uuid4().hex
-            pass
+        song_id = findId(Song, 32)
 
         form = UploadFileForm({
             'musician_id': musician_id,
             'album_id': request.POST['album_id'],
-            'song_id': song_id,
+            '_id': song_id,
             'title': request.POST['title'],
             }, request.FILES)
 
@@ -159,18 +151,13 @@ def upload(request):
 def genqr(request):
     if request.method == 'POST':
         musician = request.user.profile
-        purchase_id = uuid.uuid4().hex
-        while(Purchase.objects.filter(purchase_id=purchase_id).exists()):
-            purchase_id = uuid.uuid4().hex
-            pass
-        album = Album.objects.get(album_id=request.POST['album_id'])
+        purchase_id = findId(Purchase, 32)
+        album = Album.objects.get(_id=request.POST['album_id'])
         longitude = request.POST['longitude']
         latitude = request.POST['latitude']
-        try:
-            p = Purchase(musician_id=musician, purchase_id=purchase_id, album_id=album, longitude=longitude, latitude=latitude)
-            p.save()
-        except:
-            return HttpResponse('failed')
+        version_hash = createZip(album)
+        p = Purchase(musician_id=musician, _id=purchase_id, album_id=album, longitude=longitude, latitude=latitude, version_hash=version_hash)
+        p.save()
 
         return redirect('/streeTunes/qr/{pid}'.format(pid=purchase_id))
     else:
@@ -182,3 +169,45 @@ def qr(request, pid):
         return HttpResponseNotFound()
     return HttpResponse(pid)
 
+# Helper functions:
+def createZip(album):
+    songs = Song.objects.filter(album_id=album._id)
+    album_id = album._id
+    musician = album.musician_id
+    musician_dir = os.path.join(settings.ZIP_ROOT, musician.musician_id)
+    if not os.path.isdir(musician_dir):
+        # Create direcotry
+        os.mkdir(musician_dir)
+        pass
+    album_dir = os.path.join(musician_dir, album_id)
+    if not os.path.isdir(album_dir):
+        # Create direcotry
+        os.mkdir(album_dir)
+        pass
+
+    version_hash = hashlib.sha256()
+    for song in songs:
+        version_hash.update(bytes(song._id, encoding='utf-8'))
+        pass
+    filename = version_hash.hexdigest()+'.zip'
+    full_filename = os.path.join(album_dir, filename)
+
+    # If zip file already exists exit
+    if(os.path.isfile(full_filename)):
+        return version_hash.hexdigest()
+    # else create zip
+    else:
+        zip_file = ZipFile(full_filename, "w")
+        for song in songs:
+            song_loc = os.path.join(settings.MEDIA_ROOT, str(song.media))
+            zip_file.write(song_loc, song_loc.split('/')[-1])
+            pass
+        zip_file.close()
+        return version_hash.hexdigest()
+
+def findId(Model, length):
+    _id = uuid.uuid4().hex[0:length]
+    while(Model.objects.filter(_id=_id).exists()):
+        _id = uuid.uuid4().hex[0:length]
+        pass
+    return _id

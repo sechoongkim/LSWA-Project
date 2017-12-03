@@ -55,14 +55,14 @@ class Album(models.Model):
         * album_id is a 16 character key with no semantics
         * musician_id is a ForeignKey pointing to a musician Profile (owner of album)
     """
-    album_id = models.CharField(max_length=16, primary_key=True)
+    _id = models.CharField(max_length=16, primary_key=True)
     title = models.CharField(max_length=50)
     musician_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
 class CreateAlbumForm(ModelForm):
     class Meta:
         model = Album
-        fields = ['album_id', 'title', 'musician_id']
+        fields = ['_id', 'title', 'musician_id']
         pass
     pass
 
@@ -77,12 +77,13 @@ class Purchase(models.Model):
         * time stores information about when the purchase was generated
         * fulfilled shows if a purchase was completed (ie. end user downloaded the album)
     """
-    purchase_id = models.CharField(max_length=32, primary_key=True)
+    _id = models.CharField(max_length=32, primary_key=True)
     musician_id = models.ForeignKey(Profile, related_name='musician_of_purchase')
     album_id = models.ForeignKey(Album, related_name='album_of_purchase')
     time = models.DateTimeField(auto_now_add=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    version_hash = models.CharField(max_length=64)
     fulfilled = models.BooleanField(default=False)
     pass
 
@@ -92,7 +93,7 @@ def user_directory_path(instance, filename):
     """
         file will be uploaded to MEDIA_ROOT/<musician_id>/<album_id>/<song_id>/<filename>
     """
-    return '{0}/{1}/{2}/{3}'.format(instance.musician_id.musician_id, instance.album_id.album_id, instance.song_id, instance.title+"."+filename.split('.')[-1])
+    return '{0}/{1}/{2}/{3}'.format(instance.musician_id.musician_id, instance.album_id._id, instance._id, instance.title+"."+filename.split('.')[-1])
 
 
 class Song(models.Model):
@@ -102,7 +103,7 @@ class Song(models.Model):
         * musician_id is a ForeignKey pointing to a musician Profile (owner of song)
         * media is a fileField that
     """
-    song_id = models.CharField(max_length=32, primary_key=True)
+    _id = models.CharField(max_length=32, primary_key=True)
     album_id = models.ForeignKey(Album, related_name='album_of_song')
     title = models.CharField(max_length=50)
     musician_id = models.ForeignKey(Profile, related_name='musician_of_song')
@@ -113,7 +114,7 @@ class Song(models.Model):
 class UploadFileForm(ModelForm):
     class Meta:
         model = Song
-        fields = ['media', 'title', 'album_id', 'song_id', 'musician_id']
+        fields = ['media', 'title', 'album_id', '_id', 'musician_id']
         pass
     pass
 
