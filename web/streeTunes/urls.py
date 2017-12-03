@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib import admin
 
 from . import views
 from django.contrib.auth import views as auth_views
@@ -32,6 +31,7 @@ urlpatterns = [
     url(r'^create-album/$', views.create_album, name='genqr'),
     url(r'^upload/$', views.upload, name='upload'),
     url(r'^genqr/$', views.genqr, name='genqr'),
+    url(r'^qr/(?P<pid>\w+)$', views.qr, name='qr'),
     url('^', include('django.contrib.auth.urls'))
 ]
 
