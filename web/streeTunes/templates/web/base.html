@@ -11,12 +11,12 @@
 
   <nav>
       <ul>
-          <li><a href='{% url "streeTunes:scan" %}'>Scan</a></li>
-          <li><a href='{% url "streeTunes:login" %}'>Login</a></li>
-          <li><a href='{% url "streeTunes:signup" %}'>Signup</a></li>
-          <li><a href='{% url "streeTunes:profile" %}'>Profile</a></li>
-          <li><a href='{% url "streeTunes:dashboard" %}'>Dashboard</a></li>
-          <li><a href='{% url "streeTunes:analytics" %}'>Analytics</a></li>
+          <a href='{% url "streeTunes:scan" %}' class="nav-link"><li>Scan</li></a>
+          <a href='{% url "streeTunes:download" %}' class="nav-link"><li>Download</li></a>
+          <a href='{% url "streeTunes:login" %}' class="nav-link"><li>Login</li></a>
+          <a href='{% url "streeTunes:signup" %}' class="nav-link"><li>Signup</li></a>
+          <a href='{% url "streeTunes:profile" %}' class="nav-link"><li>Profile</li></a>
+          <a href='{% url "streeTunes:dashboard" %}' class="nav-link"><li>Dashboard</li></a>
       </ul>
   </nav>
   <div id="sidebar">
