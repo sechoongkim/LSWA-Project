@@ -3,7 +3,7 @@
 {% load staticfiles %}
 <html>
 <head>
-  {% block header %}{% endblock header %}
+  {% block head %}{% endblock head %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
   <title>StreeTunes</title>
 </head>
@@ -16,6 +16,7 @@
           <li><a href='{% url "streeTunes:signup" %}'>Signup</a></li>
           <li><a href='{% url "streeTunes:profile" %}'>Profile</a></li>
           <li><a href='{% url "streeTunes:dashboard" %}'>Dashboard</a></li>
+          <li><a href='{% url "streeTunes:analytics" %}'>Analytics</a></li>
       </ul>
   </nav>
   <div id="sidebar">

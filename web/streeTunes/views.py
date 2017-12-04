@@ -163,12 +163,30 @@ def genqr(request):
     else:
         return HttpResponseNotFound()
 
-
+@login_required
 def qr(request, pid):
     if(pid is None):
         return HttpResponseNotFound()
-    return HttpResponse(pid)
+    return render(request, 'web/qr.html', {'purchase_id': pid})
 
+def analytics(request):
+    if "genre" in request.GET:
+        genres = request.GET.getlist('genre')
+    else:
+        genres = ['jazz', 'classical', 'pop', 'blues']
+    if 'weekday' in request.GET and request.GET['weekday'] != 'Any':
+        weekday = [int(request.GET['weekday'])]
+    else:
+        weekday = [1, 2, 3, 4, 5, 6, 7]
+    if 'gender' in request.GET and request.GET['gender'] != 'Any':
+        gender = [request.GET['gender']]
+    else:
+        gender = ['Male', 'Female', None]
+    purchases = Purchase.objects.filter(fulfilled=True, musician_id__genre__in=genres, musician_id__gender__in = gender, time__week_day__in=weekday)
+    print(purchases)
+    return render(request, 'web/analytics.html', {'purchases':purchases})
+
+################################################################################
 # Helper functions:
 def createZip(album):
     songs = Song.objects.filter(album_id=album._id)
