@@ -36,31 +36,11 @@
 </style>
 
 <div>
-
-        <li>Time: Dec. 3, 2017, 6:32 p.m.</li>
-        <li>longitude: -74.034453</li>
-        <li>latitude: 40.730257</li>
-
-        <li>Time: Dec. 3, 2017, 6:33 p.m.</li>
-        <li>longitude: -74.036812</li>
-        <li>latitude: 40.730492</li>
-
-        <li>Time: Dec. 4, 2017, 12:35 a.m.</li>
-        <li>longitude: -74.444400</li>
-        <li>latitude: 40.492969</li>
-
-        <li>Time: Dec. 4, 2017, 12:43 a.m.</li>
-        <li>longitude: -74.444392</li>
-        <li>latitude: 40.492973</li>
-
-        <li>Time: Dec. 4, 2017, 4:30 a.m.</li>
-        <li>longitude: -74.034304</li>
-        <li>latitude: 40.730161</li>
-
-        <li>Time: Dec. 4, 2017, 3:38 p.m.</li>
-        <li>longitude: -73.996788</li>
-        <li>latitude: 40.729770</li>
-
+        {% for p in purchases%}
+        <li>Time: {{p.time}}</li>
+        <li>longitude: {{p.longitude}}</li>
+        <li>latitude: {{p.latitude}}</li>
+        {% endfor %}
 </div>
 
 <div id='map'></div>
@@ -119,45 +99,18 @@
     }
     function getLocations(hourVal){
         let locations = []
-
-            var utcDate = '2017-12-03T18:32:34.893582+00:00'
+            {% for p in purchases %}
+            var utcDate = '{{p.time.isoformat}}'
             var localDate = new Date(utcDate);
+            console.log(utcDate)
+            console.log(localDate)
             if(localDate.getHours() == hourVal){
-                locations.push({'time':'Dec. 3, 2017, 6:32 p.m.', 'latitude':40.730257, 'longitude':-74.034453})
+                locations.push({'time':'{{p.time}}', 'latitude':{{p.latitude}}, 'longitude':{{p.longitude}}})
             }
-
-            var utcDate = '2017-12-03T18:33:07.173387+00:00'
-            var localDate = new Date(utcDate);
-            if(localDate.getHours() == hourVal){
-                locations.push({'time':'Dec. 3, 2017, 6:33 p.m.', 'latitude':40.730492, 'longitude':-74.036812})
-            }
-
-            var utcDate = '2017-12-04T00:35:55.750354+00:00'
-            var localDate = new Date(utcDate);
-            if(localDate.getHours() == hourVal){
-                locations.push({'time':'Dec. 4, 2017, 12:35 a.m.', 'latitude':40.492969, 'longitude':-74.444400})
-            }
-
-            var utcDate = '2017-12-04T00:43:38.647407+00:00'
-            var localDate = new Date(utcDate);
-            if(localDate.getHours() == hourVal){
-                locations.push({'time':'Dec. 4, 2017, 12:43 a.m.', 'latitude':40.492973, 'longitude':-74.444392})
-            }
-
-            var utcDate = '2017-12-04T04:30:17.663244+00:00'
-            var localDate = new Date(utcDate);
-            if(localDate.getHours() == hourVal){
-                locations.push({'time':'Dec. 4, 2017, 4:30 a.m.', 'latitude':40.730161, 'longitude':-74.034304})
-            }
-
-            var utcDate = '2017-12-04T15:38:23.088575+00:00'
-            var localDate = new Date(utcDate);
-            if(localDate.getHours() == hourVal){
-                locations.push({'time':'Dec. 4, 2017, 3:38 p.m.', 'latitude':40.729770, 'longitude':-73.996788})
-            }
+            {% endfor %}
 
         return locations
     }
 </script>
 
-{% end block %}
+{% endblock %}
