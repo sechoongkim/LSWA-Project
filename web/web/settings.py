@@ -76,22 +76,14 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# Database
-# DATABASES = {
-#   'default': {
-#     'ENGINE': 'django.db.backends.mysql',
-#     'OPTIONS': {
-#       'read_default_file': os.path.join(BASE_DIR, '..', 'LSWA-Project', 'db', 'my.cnf'),
-#     },
-#   }
-# }
+execfile(os.path.join(BASE_DIR, '..', '..', 'db', 'db_settings.py'))
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
@@ -134,9 +126,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/site/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 ZIP_ROOT = os.path.join(BASE_DIR, 'zips')
 
 LOGIN_URL = '/streeTunes/login/'
 LOGIN_REDIRECT_URL = '/streeTunes/dashboard'
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/db.debug.log',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+

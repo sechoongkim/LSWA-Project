@@ -1,0 +1,114 @@
+{% extends "web/base.html" %}
+
+{% block content %}
+{% load staticfiles %}
+
+<form action='/streeTunes/analytics/' method='GET'>
+    <label>Day of Week</label>
+    <input type='radio' name='weekday' value='Any' checked required>Any day of the week</input>
+    <input type='radio' name='weekday' value='1'>Sunday</input>
+    <input type='radio' name='weekday' value='2'>Monday</input>
+    <input type='radio' name='weekday' value='3'>Tuesday</input>
+    <input type='radio' name='weekday' value='4'>Wednesday</input>
+    <input type='radio' name='weekday' value='5'>Thursday</input>
+    <input type='radio' name='weekday' value='6'>Friday</input>
+    <input type='radio' name='weekday' value='7'>Saturday</input>
+    <br>
+    <label>Gender</label>
+    <input type="radio" name="gender" value="Any" checked required>Any</radio>
+    <input type="radio" name="gender" value="Male">Male</radio>
+    <input type="radio" name="gender" value="Female">Female</radio>
+    <br>
+    <label>Genre</label>
+    <input type='checkbox' name='genre' value='jazz'>Jazz</input>
+    <input type='checkbox' name='genre' value='blues'>Blues</input>
+    <input type='checkbox' name='genre' value='classical'>Classical</input>
+    <input type='checkbox' name='genre' value='pop'>Pop</input>
+    <br>
+    <input type="submit" value='Get Data'/>
+</form>
+
+<style>
+ #map {
+   height: 500px;
+   width: 500px;
+ }
+</style>
+
+<div>
+    {% for purchase in purchases %}
+        <li>Time: {{purchase.time}}</li>
+        <li>longitude: {{purchase.longitude}}</li>
+        <li>latitude: {{purchase.latitude}}</li>
+    {% endfor %}
+</div>
+
+<div id='map'></div>
+
+<label>Hour</label>
+
+<input type="range" min="0" max="23" step="1" name='hour' id='hour'>
+<p id='hourValue'></p>
+
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyBZNSe98eYW5Vfw8sYA6BoBfRArVGOZbUU" type="text/javascript"></script>
+<script type="text/javascript">
+    var hourVal = $('#hour').val()
+    var locations = getLocations(hourVal)
+    var map = makemap()
+    plotOnMap(locations)
+
+
+    $('#hourValue').text(hourVal)
+    $('#hour').on("change mousemove", function(){
+        $('#hourValue').text(this.value)
+    })
+
+
+    $('#hour').on("change", function() {
+        locations = getLocations(this.value)
+        map = makemap()
+        plotOnMap(locations)
+    });
+
+    function makemap(){
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: new google.maps.LatLng(40.785091, -73.968285),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        return map
+    }
+
+    function plotOnMap(locations){
+        for (var i = 0; i < locations.length; i++) {
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations[i]['latitude'], locations[i]['longitude']),
+                map: map,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#F00',
+                    fillOpacity: 0.3,
+                    strokeColor: '#F00',
+                    strokeOpacity: 0.3,
+                    strokeWeight: 1,
+                    scale: 5
+                }
+            });
+        }
+    }
+    function getLocations(hourVal){
+        let locations = []
+        {% for p in purchases%}
+            var utcDate = '{{p.time.isoformat}}'
+            var localDate = new Date(utcDate);
+            if(localDate.getHours() == hourVal){
+                locations.push({'time':'{{p.time}}', 'latitude':{{p.latitude}}, 'longitude':{{p.longitude}}})
+            }
+        {% endfor %}
+        return locations
+    }
+</script>
+
+
+{% endblock %}
