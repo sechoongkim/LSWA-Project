@@ -167,7 +167,7 @@ def genqr(request):
 def qr(request, pid):
     if(pid is None):
         return HttpResponseNotFound()
-    return HttpResponse(pid)
+    return render(request, 'web/qr.html', {'purchase_id': pid})
 
 def analytics(request):
     if "genre" in request.GET:

@@ -1,2 +1,33 @@
-<h1>qr</h1>
-<p>{{purchase_id}}</p>
+{% extends "web/base.html" %}
+
+{% block head %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/qrcode.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>Here's your QR code:</h1>
+<div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
+
+<script type="text/javascript">
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+	width : 300,
+	height : 300
+});
+
+function makeCode () {
+	var elText = '{{purchase_id}}';
+
+	if (!elText) {
+		alert("No Pid given");
+		return;
+	}
+
+	qrcode.makeCode(elText);
+}
+
+makeCode();
+
+</script>
+{% endblock %}
