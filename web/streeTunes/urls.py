@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^upload/$', views.upload, name='upload'),
     url(r'^genqr/$', views.genqr, name='genqr'),
     url(r'^qr/(?P<pid>\w+)$', views.qr, name='qr'),
-    url('^', include('django.contrib.auth.urls'))
+    url('^', include('django.contrib.auth.urls')),
+    url(r'^analytics/$', views.analytics, name='analytics'),
 ]
 
 
