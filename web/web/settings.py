@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-execfile(os.path.join(BASE_DIR, '..', '..', 'db', 'db_settings.py'))
+execfile(os.path.join(BASE_DIR, '..', 'db', 'db_settings.py'))
 
 # DATABASES = {
 #     'default': {
