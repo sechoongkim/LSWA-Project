@@ -1,8 +1,8 @@
 /* Create our database */
-CREATE DATABASE scalica CHARACTER SET utf8;
+CREATE DATABASE streeTunes CHARACTER SET utf8;
 
 /* Setup permissions for the server */
-CREATE USER 'appserver'@'localhost' IDENTIFIED BY 'foobarzoot';
-CREATE USER 'www-data'@'localhost' IDENTIFIED BY 'foobarzoot';
-GRANT ALL ON scalica.* TO 'appserver'@'localhost';
-GRANT ALL ON scalica.* TO 'www-data'@'localhost';
+CREATE USER 'appserver'@'54.145.132.94' IDENTIFIED BY 'foobarzoot';
+CREATE USER 'www-data'@'54.145.132.94' IDENTIFIED BY 'foobarzoot';
+GRANT ALL ON streeTunes.* TO 'appserver'@'54.145.132.94';
+GRANT ALL ON streeTunes.* TO 'www-data'@'54.145.132.94';

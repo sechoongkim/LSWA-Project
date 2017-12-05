@@ -6,7 +6,7 @@ DATABASES = {
     'NAME': 'streeTunes',
     'USER': 'appserver',
     'PASSWORD': 'foobarzoot',
-    'HOST': '127.0.0.1',
+    'HOST': '54.145.132.94',
     'PORT': '3306',
   },
   'db1': {
@@ -14,7 +14,7 @@ DATABASES = {
     'NAME': 'streeTunes',
     'USER': 'appserver',
     'PASSWORD': 'foobarzoot',
-    'HOST': '127.0.0.1',
+    'HOST': '54.145.132.94',
     'PORT': '3307',
   },
   'db2': {
@@ -22,7 +22,7 @@ DATABASES = {
     'NAME': 'streeTunes',
     'USER': 'appserver',
     'PASSWORD': 'foobarzoot',
-    'HOST': '127.0.0.1',
+    'HOST': '54.145.132.94',
     'PORT': '3308',
   },
 }

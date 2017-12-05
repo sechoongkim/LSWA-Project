@@ -51,11 +51,11 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 
 # Use the following config.
-cat <<EOF > /etc/apache2/sites-available/scalica.conf
-WSGIScriptAlias / /var/www/site/scalica/scalica/wsgi.py
-WSGIDaemonProcess scalica python-path=/var/www/site/scalica:/var/www/site/depot/env/lib/python2.7/site-packages
-WSGIProcessGroup scalica
-<Directory /var/www/site/scalica/scalica>
+cat <<EOF > /etc/apache2/sites-available/streeTunes.conf
+WSGIScriptAlias / /var/www/site/web/wsgi.py
+WSGIDaemonProcess streeTunes python-path=/var/www/site/streeTunes:/var/www/site/depot/env/lib/python3.0/site-packages
+WSGIProcessGroup streeTunes
+<Directory /var/www/site/web>
   <Files wsgi.py>
     Require all granted
   </Files>
@@ -67,6 +67,6 @@ Alias /static/ /var/www/site/static/
 </Directory>
 
 EOF
-a2ensite scalica
+a2ensite streeTunes
 service apache2 reload
 # We should be able to serve now.
