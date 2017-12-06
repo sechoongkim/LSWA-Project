@@ -63,7 +63,7 @@ class Album(models.Model):
     """
     _id = models.CharField(max_length=16, primary_key=True)
     title = models.CharField(max_length=50)
-    musician_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    musician_id = models.CharField(max_length=16)
 
 class CreateAlbumForm(ModelForm):
     class Meta:
@@ -84,7 +84,7 @@ class Purchase(models.Model):
         * fulfilled shows if a purchase was completed (ie. end user downloaded the album)
     """
     _id = models.CharField(max_length=32, primary_key=True)
-    musician_id = models.ForeignKey(Profile, related_name='musician_of_purchase')
+    musician_id = models.CharField(max_length=16)
     album_id = models.ForeignKey(Album, related_name='album_of_purchase')
     time = models.DateTimeField(auto_now_add=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
@@ -99,7 +99,7 @@ def user_directory_path(instance, filename):
     """
         file will be uploaded to MEDIA_ROOT/<musician_id>/<album_id>/<song_id>/<filename>
     """
-    return '{0}/{1}/{2}/{3}'.format(instance.musician_id.musician_id, instance.album_id._id, instance._id, instance.title+"."+filename.split('.')[-1])
+    return '{0}/{1}/{2}/{3}'.format(instance.musician_id, instance.album_id._id, instance._id, instance.title+"."+filename.split('.')[-1])
 
 
 class Song(models.Model):
@@ -112,7 +112,7 @@ class Song(models.Model):
     _id = models.CharField(max_length=32, primary_key=True)
     album_id = models.ForeignKey(Album, related_name='album_of_song')
     title = models.CharField(max_length=50)
-    musician_id = models.ForeignKey(Profile, related_name='musician_of_song')
+    musician_id = models.CharField(max_length=16)
     media = models.FileField(upload_to=user_directory_path)
     pass
 

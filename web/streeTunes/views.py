@@ -25,7 +25,7 @@ def download(request):
     if purchase_record.fulfilled:
         return HttpResponse('Sorry, looks like this download link as already expired.')
     else:
-        filename = os.path.join(settings.ZIP_ROOT, purchase_record.musician_id.musician_id, purchase_record.album_id._id, purchase_record.version_hash+'.zip')
+        filename = os.path.join(settings.ZIP_ROOT, purchase_record.musician_id, purchase_record.album_id._id, purchase_record.version_hash+'.zip')
         response = HttpResponse(open(filename, 'rb').read(), content_type='application/zip')
         response['Content-Disposition'] = 'attachment; filename="{filename}"'.format(filename=album_name+'.zip')
         purchase_record.fulfilled = True
@@ -156,14 +156,14 @@ def upload(request):
 @login_required
 def genqr(request):
     if request.method == 'POST':
-        musician = request.user.profile
-        purchase_id = findId(Purchase, 16, musician.musician_id, True) + musician.musician_id
+        musician_id = request.user.profile.musician_id
+        purchase_id = findId(Purchase, 16, musician.musician_id, True) + musician_id
         album = Album.objects.get(_id=request.POST['album_id'])
-        set_user_for_sharding(album, musician.musician_id)
+        set_user_for_sharding(album, musician_id)
         longitude = request.POST['longitude']
         latitude = request.POST['latitude']
         version_hash = createZip(album)
-        p = Purchase(musician_id=musician, _id=purchase_id, album_id=album, longitude=longitude, latitude=latitude, version_hash=version_hash)
+        p = Purchase(musician_id=musician_id, _id=purchase_id, album_id=album, longitude=longitude, latitude=latitude, version_hash=version_hash)
         p.save()
 
         return redirect('/streeTunes/qr/{pid}'.format(pid=purchase_id))
@@ -204,8 +204,8 @@ def analytics(request):
 def createZip(album):
     songs = Song.objects.filter(album_id=album._id)
     album_id = album._id
-    musician = album.musician_id
-    musician_dir = os.path.join(settings.ZIP_ROOT, musician.musician_id)
+    musician_id = album.musician_id
+    musician_dir = os.path.join(settings.ZIP_ROOT, musician_id)
     if not os.path.isdir(musician_dir):
         # Create direcotry
         os.mkdir(musician_dir)
