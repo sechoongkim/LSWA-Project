@@ -42,7 +42,7 @@ class UserRouter(object):
     db = None
     try:
       instance = hints['instance']
-      db = self._database_of(int(instance.musician_id,16))
+      db = self._database_of(int(instance.musician_id, 16))
     except AttributeError:
       # For the user model the key is id.
       db = self._database_of(instance.id)

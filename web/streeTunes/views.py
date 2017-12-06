@@ -46,7 +46,6 @@ def signup(request):
             new_user = form.save(commit=True)
             musician_id = uuid.uuid4().hex[0:16]
             profile_querry = Profile.objects
-            set_user_for_sharding(profile_querry, int(musician_id,16))
             while(profile_querry.filter(musician_id=musician_id).exists()):
                 musician_id = uuid.uuid4().hex[0:16]
             profile_querry.create(auth_user=new_user, musician_id=musician_id)
@@ -160,7 +159,7 @@ def genqr(request):
         musician = request.user.profile
         purchase_id = findId(Purchase, 16, musician.musician_id, True) + musician.musician_id
         album = Album.objects.get(_id=request.POST['album_id'])
-        set_user_for_sharding(album, int(musician.musician_id, 16))
+        set_user_for_sharding(album, musician.musician_id)
         longitude = request.POST['longitude']
         latitude = request.POST['latitude']
         version_hash = createZip(album)
@@ -244,7 +243,7 @@ def findId(Model, length, user_id, is_purchase_id):
     else:
         _id = uuid.uuid4().hex[0:length]
     model_query = Model.objects
-    set_user_for_sharding(model_query, int(user_id, 16))
+    set_user_for_sharding(model_query, user_id)
     while(model_query.filter(_id=_id).exists()):
         _id = uuid.uuid4().hex[0:length]
         pass
