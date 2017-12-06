@@ -79,17 +79,14 @@ def profile(request):
     age = profile.age
 
     if request.method == "POST":
-        # TODO: UPDATE PROFILE FOR LOGGED IN USER
-        cur_user = request.user
-
         if request.POST['age'] != '':
-            cur_user.profile.age = request.POST['age']
+            profile.age = request.POST['age']
         if request.POST.__contains__('gender'):
-            cur_user.profile.gender = request.POST['gender']
+            profile.gender = request.POST['gender']
         if request.POST.__contains__('genre'):
-            cur_user.profile.genre = request.POST['genre']
-
-        cur_user.save()
+            profile.genre = request.POST['genre']
+        profile.save()
+        
         return redirect('/streeTunes/profile/')
 
     return render(request, 'web/profile.html', {'username': request.user.username, 'profile': {'gender': gender, 'genre':genre, 'age': age}})
