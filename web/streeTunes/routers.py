@@ -42,8 +42,10 @@ class UserRouter(object):
     db = None
     try:
       instance = hints['instance']
-      print(instance.musician_id.musician_id)
-      uid = int(instance.musician_id.musician_id, 16)
+      print(instance)
+      print(instance.musician_id)
+      uid = int(instance.musician_id, 16)
+      print(uid)
       db = self._database_of(uid)
     except AttributeError:
       # For the user model the key is id.
