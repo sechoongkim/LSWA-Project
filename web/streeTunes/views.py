@@ -99,10 +99,10 @@ def dashboard(request):
     musician_id = request.user.profile.musician_id
     data = []
     albums = Album.objects.filter(musician_id=musician_id)
-    set_user_for_sharding(albums, int(musician_id, 16))
+    set_user_for_sharding(albums, musician_id)
     for album in albums:
         songs = Song.objects.filter(musician_id=musician_id, album_id=album._id)
-        set_user_for_sharding(songs, int(musician_id, 16))
+        set_user_for_sharding(songs, musician_id)
         data.append({"album_id": album._id, "title": album.title, "songs": songs})
 
     return render(request, 'web/dashboard.html', {"data": data})
