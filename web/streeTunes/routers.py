@@ -23,7 +23,7 @@ def logical_to_physical(logical):
   return LOGICAL_TO_PHYSICAL[logical]
 
 def logical_shard_for_user(user_id):
-  print "Looking for shard for user %d" % user_id
+  print("Looking for shard for user %d" % user_id)
   return user_id % NUM_LOGICAL_SHARDS
 
 class UserRouter(object):
@@ -50,8 +50,8 @@ class UserRouter(object):
       try:
         db = self._database_of(int(hints['user_id']))
       except KeyError:
-        print "No instance in hints"
-    print "Returning", db
+        print("No instance in hints")
+    print("Returning", db)
     return db
 
   def db_for_read(self, model, **hints):
@@ -65,8 +65,8 @@ class UserRouter(object):
   def allow_relation(self, obj1, obj2, **hints):
     if (obj1._meta.app_label == 'auth' and obj2._meta.app_label != 'auth') or \
       (obj1._meta.app_label != 'auth' and obj2._meta.app_label == 'auth'):
-      print "Rejecting cross-table relationship", obj1._meta.app_label, \
-        obj2._meta.app_label
+      print("Rejecting cross-table relationship", obj1._meta.app_label, \
+        obj2._meta.app_label)
       return False
     return True
 
