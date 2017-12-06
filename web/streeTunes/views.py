@@ -9,7 +9,7 @@ import os
 from django.conf import settings
 import hashlib
 from utils.hints import set_user_for_sharding
-from routers import NUM_LOGICAL_SHARDS
+from .routers import NUM_LOGICAL_SHARDS
 
 # Create your views here.
 def index(request):
