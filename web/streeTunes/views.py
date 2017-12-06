@@ -86,7 +86,7 @@ def profile(request):
         if request.POST.__contains__('genre'):
             profile.genre = request.POST['genre']
         profile.save()
-        
+
         return redirect('/streeTunes/profile/')
 
     return render(request, 'web/profile.html', {'username': request.user.username, 'profile': {'gender': gender, 'genre':genre, 'age': age}})
@@ -114,7 +114,7 @@ def create_album(request):
         return HttpResponseNotFound()
 
     musician_id = request.user.profile.musician_id
-    album_id = findId(Album, 16, musician_id)
+    album_id = findId(Album, 16, musician_id, False)
     form = CreateAlbumForm({'musician_id':musician_id, '_id':album_id, 'title': request.POST['title']})
 
     if form.is_valid():
@@ -133,7 +133,7 @@ def upload(request):
         return render(request, 'web/upload', {'form': form})
     else:
         musician_id = request.user.profile.musician_id
-        song_id = findId(Song, 32, musician_id)
+        song_id = findId(Song, 32, musician_id, False)
 
         form = UploadFileForm({
             'musician_id': musician_id,
