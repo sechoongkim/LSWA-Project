@@ -44,7 +44,8 @@ class UserRouter(object):
       instance = hints['instance']
       print(instance)
       print(instance.musician_id)
-      uid = int(instance.musician_id, 16)
+      print(instance.musician_id.musician_id)
+      uid = int(instance.musician_id.musician_id, 16)
       print(uid)
       db = self._database_of(uid)
     except AttributeError:
