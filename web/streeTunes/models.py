@@ -17,10 +17,12 @@ class Profile(models.Model):
         * auth_user points to an entry in the User model, which is used for authentication
     """
     musician_id = models.CharField(primary_key=True, max_length=16, editable=False)
-    auth_user = models.IntegerField()
+    auth_user = models.OneToOne(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=10, null=True, default=None)
     age = models.IntegerField(null=True, default=None)
     genre = models.CharField(max_length=10, null=True, default=None)
+    class Meta:
+        app_label = 'auth'
     pass
 
 
