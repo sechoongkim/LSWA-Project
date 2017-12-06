@@ -142,7 +142,6 @@ def upload(request):
             }, request.FILES)
 
         if form.is_valid():
-            set_user_for_sharding(form, musician_id)
             form.save()
             return redirect('/streeTunes/dashboard/')
         else:
