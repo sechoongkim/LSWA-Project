@@ -5,6 +5,7 @@ from django.dispatch import receiver
 import uuid
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
+from .routers import NUM_LOGICAL_SHARDS
 
 
 
@@ -34,9 +35,12 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         musician_id = uuid.uuid4().hex[0:16]
-        while(Profile.objects.filter(musician_id=musician_id).exists()):
+        profile_querry = Profile.objects
+        set_user_for_sharding(profile_querry, musician_id)
+        while(profile_querry.filter(musician_id=musician_id).exists()):
             musician_id = uuid.uuid4().hex[0:16]
-        Profile.objects.create(auth_user=instance, musician_id=musician_id)
+            set_user_for_sharding(profile_querry, musician_id)
+        profile_querry.create(auth_user=instance, musician_id=musician_id)
         pass
     pass
 
