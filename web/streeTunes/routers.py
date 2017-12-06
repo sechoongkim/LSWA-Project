@@ -29,7 +29,7 @@ def logical_shard_for_user(user_id):
 class UserRouter(object):
 
   def _database_of(self, user_id):
-    return logical_to_physical(logical_shard_for_user(user_id))
+    return logical_to_physical(logical_shard_for_user(int(user_id, 16)))
 
   def _db_for_read_write(self, model, **hints):
     """ """
@@ -48,7 +48,7 @@ class UserRouter(object):
       db = self._database_of(instance.id)
     except KeyError:
       try:
-        db = self._database_of(int(hints['user_id']))
+        db = self._database_of(hints['user_id'])
       except KeyError:
         print("No instance in hints")
     print("Returning", db)
