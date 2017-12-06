@@ -36,10 +36,10 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         musician_id = uuid.uuid4().hex[0:16]
         profile_querry = Profile.objects
-        set_user_for_sharding(profile_querry, musician_id)
+        set_user_for_sharding(profile_querry, int(musician_id,16))
         while(profile_querry.filter(musician_id=musician_id).exists()):
             musician_id = uuid.uuid4().hex[0:16]
-            set_user_for_sharding(profile_querry, musician_id)
+            set_user_for_sharding(profile_querry, int(musician_id,16))
         profile_querry.create(auth_user=instance, musician_id=musician_id)
         pass
     pass

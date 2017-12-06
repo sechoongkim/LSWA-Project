@@ -96,10 +96,10 @@ def dashboard(request):
     musician_id = request.user.profile.musician_id
     data = []
     albums = Album.objects.filter(musician_id=musician_id)
-    set_user_for_sharding(albums, musician_id)
+    set_user_for_sharding(albums, int(musician_id, 16))
     for album in albums:
         songs = Song.objects.filter(musician_id=musician_id, album_id=album._id)
-        set_user_for_sharding(songs, musician_id)
+        set_user_for_sharding(songs, int(musician_id, 16))
         data.append({"album_id": album._id, "title": album.title, "songs": songs})
 
     return render(request, 'web/dashboard.html', {"data": data})
@@ -156,7 +156,7 @@ def genqr(request):
         musician = request.user.profile
         purchase_id = findId(Purchase, 16, musician.musician_id, True) + musician.musician_id
         album = Album.objects.get(_id=request.POST['album_id'])
-        set_user_for_sharding(album, musician.musician_id)
+        set_user_for_sharding(album, int(musician.musician_id, 16))
         longitude = request.POST['longitude']
         latitude = request.POST['latitude']
         version_hash = createZip(album)
@@ -240,7 +240,7 @@ def findId(Model, length, user_id, is_purchase_id):
     else:
         _id = uuid.uuid4().hex[0:length]
     model_query = Model.objects
-    set_user_for_sharding(model_query, user_id)
+    set_user_for_sharding(model_query, int(user_id, 16))
     while(model_query.filter(_id=_id).exists()):
         _id = uuid.uuid4().hex[0:length]
         pass
