@@ -31,24 +31,24 @@ class Profile(models.Model):
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html
 
 # Automaticaly create a Profile for every user created
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        musician_id = uuid.uuid4().hex[0:16]
-        profile_querry = Profile.objects
-        set_user_for_sharding(profile_querry, int(musician_id,16))
-        while(profile_querry.filter(musician_id=musician_id).exists()):
-            musician_id = uuid.uuid4().hex[0:16]
-            set_user_for_sharding(profile_querry, int(musician_id,16))
-        profile_querry.create(auth_user=instance, musician_id=musician_id)
-        pass
-    pass
-
-# Automaticaly save Profile when user saves
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-    pass
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         musician_id = uuid.uuid4().hex[0:16]
+#         profile_querry = Profile.objects
+#         set_user_for_sharding(profile_querry, int(musician_id,16))
+#         while(profile_querry.filter(musician_id=musician_id).exists()):
+#             musician_id = uuid.uuid4().hex[0:16]
+#             set_user_for_sharding(profile_querry, int(musician_id,16))
+#         profile_querry.create(auth_user=instance, musician_id=musician_id)
+#         pass
+#     pass
+#
+# # Automaticaly save Profile when user saves
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()
+#     pass
 
 #######################################################
 
