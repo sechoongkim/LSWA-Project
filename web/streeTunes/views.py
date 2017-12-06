@@ -50,7 +50,7 @@ def signup(request):
             while(profile_querry.filter(musician_id=musician_id).exists()):
                 musician_id = uuid.uuid4().hex[0:16]
                 set_user_for_sharding(profile_querry, int(musician_id,16))
-            profile_querry.create(auth_user=new_user, musician_id=musician_id)
+            profile_querry.create(auth_user=new_user.id, musician_id=musician_id)
             pass
         else:
             return render(request, 'web/signup.html', {'form':user_form, 'error': 'Invalid username or password'})
