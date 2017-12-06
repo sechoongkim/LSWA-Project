@@ -8,7 +8,8 @@ from zipfile import *
 import os
 from django.conf import settings
 import hashlib
-
+from utils.hints import set_user_for_sharding
+from routers import NUM_LOGICAL_SHARDS
 
 # Create your views here.
 def index(request):
@@ -95,8 +96,10 @@ def dashboard(request):
     musician_id = request.user.profile.musician_id
     data = []
     albums = Album.objects.filter(musician_id=musician_id)
+    set_user_for_sharding(albums, musician_id)
     for album in albums:
         songs = Song.objects.filter(musician_id=musician_id, album_id=album._id)
+        set_user_for_sharding(songs, musician_id)
         data.append({"album_id": album._id, "title": album.title, "songs": songs})
 
     return render(request, 'web/dashboard.html', {"data": data})
@@ -107,7 +110,7 @@ def create_album(request):
         return HttpResponseNotFound()
 
     musician_id = request.user.profile.musician_id
-    album_id = findId(Album, 16)
+    album_id = findId(Album, 16, musician_id)
     form = CreateAlbumForm({'musician_id':musician_id, '_id':album_id, 'title': request.POST['title']})
 
     if form.is_valid():
@@ -126,7 +129,7 @@ def upload(request):
         return render(request, 'web/upload', {'form': form})
     else:
         musician_id = request.user.profile.musician_id
-        song_id = findId(Song, 32)
+        song_id = findId(Song, 32, musician_id)
 
         form = UploadFileForm({
             'musician_id': musician_id,
@@ -151,8 +154,9 @@ def upload(request):
 def genqr(request):
     if request.method == 'POST':
         musician = request.user.profile
-        purchase_id = findId(Purchase, 32)
+        purchase_id = findId(Purchase, 16, musician.musician_id, True) + musician.musician_id
         album = Album.objects.get(_id=request.POST['album_id'])
+        set_user_for_sharding(album, musician.musician_id)
         longitude = request.POST['longitude']
         latitude = request.POST['latitude']
         version_hash = createZip(album)
@@ -182,9 +186,15 @@ def analytics(request):
         gender = [request.GET['gender']]
     else:
         gender = ['Male', 'Female', None]
-    purchases = Purchase.objects.filter(fulfilled=True, musician_id__genre__in=genres, musician_id__gender__in = gender, time__week_day__in=weekday)
+
+    all_fulfilled_purchases = []
+    for shard in range(0, NUM_LOGICAL_SHARDS):
+        purchases = Purchase.objects.filter(fulfilled=True, musician_id__genre__in=genres, musician_id__gender__in = gender, time__week_day__in=weekday)
+        set_user_for_sharding(purchases, shard)
+        all_fulfilled_purchases = all_fulfilled_purchases + [p for p in purchases]
+
     print(purchases)
-    return render(request, 'web/analytics.html', {'purchases':purchases})
+    return render(request, 'web/analytics.html', {'purchases':all_fulfilled_purchases})
 
 ################################################################################
 # Helper functions:
@@ -223,9 +233,15 @@ def createZip(album):
         zip_file.close()
         return version_hash.hexdigest()
 
-def findId(Model, length):
-    _id = uuid.uuid4().hex[0:length]
-    while(Model.objects.filter(_id=_id).exists()):
+def findId(Model, length, user_id, is_purchase_id):
+    _id = ''
+    if is_purchase_id:
+        _id = uuid.uuid4().hex[0:length] + user_id
+    else:
+        _id = uuid.uuid4().hex[0:length]
+    model_query = Model.objects
+    set_user_for_sharding(model_query, user_id)
+    while(model_query.filter(_id=_id).exists()):
         _id = uuid.uuid4().hex[0:length]
         pass
     return _id

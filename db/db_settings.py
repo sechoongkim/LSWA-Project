@@ -1,0 +1,31 @@
+# Database sepecific settings.
+DATABASES = {
+  'default': { },
+  'auth_db': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'streeTunes',
+    'USER': 'appserver',
+    'PASSWORD': 'foobarzoot',
+    'HOST': '172.17.0.2',
+    'PORT': '3306',
+  },
+  'db1': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'streeTunes',
+    'USER': 'appserver',
+    'PASSWORD': 'foobarzoot',
+    'HOST': '172.17.0.3',
+    'PORT': '3306',
+  },
+  'db2': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'streeTunes',
+    'USER': 'appserver',
+    'PASSWORD': 'foobarzoot',
+    'HOST': '172.17.0.4',
+    'PORT': '3306',
+  },
+}
+
+# Database routers go here:
+DATABASE_ROUTERS = ['streeTunes.routers.UserRouter']

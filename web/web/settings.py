@@ -29,9 +29,12 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 INSTALLED_APPS = [
     'streeTunes.apps.StreetunesConfig',
+    'utils',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,12 +89,13 @@ WSGI_APPLICATION = 'web.wsgi.application'
 #   }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+exec(open(os.path.join(BASE_DIR, '..', 'db', 'db_settings.py')).read())
 
 
 # Password validation
@@ -134,6 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/site/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 ZIP_ROOT = os.path.join(BASE_DIR, 'zips')
