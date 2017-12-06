@@ -5,7 +5,7 @@ from django.dispatch import receiver
 import uuid
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from .routers import NUM_LOGICAL_SHARDS
+from utils.hints import set_user_for_sharding
 
 
 
