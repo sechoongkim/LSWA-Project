@@ -143,11 +143,11 @@ def upload(request):
 
         # if form.is_valid():
         new_song = Song(
-        'musician_id': musician_id,
-        'album_id': request.POST['album_id'],
-        '_id': song_id,
-        'title': request.POST['title'],
-        'media': request.FILES['media']
+        musician_id= musician_id,
+        album_id= request.POST['album_id'],
+        _id= song_id,
+        title= request.POST['title'],
+        media= request.FILES['media']
         )
         set_user_for_sharding(new_song, musician_id)
         new_song.save()
