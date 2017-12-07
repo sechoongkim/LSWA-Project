@@ -116,13 +116,13 @@ def create_album(request):
     album_id = findId(Album, 16, musician_id, False)
     form = CreateAlbumForm({'musician_id':musician_id, '_id':album_id, 'title': request.POST['title']})
 
-    if form.is_valid():
-        form.save()
-        return redirect('/streeTunes/dashboard/')
-    else:
-        # Error
-        print(form.errors)
-        return HttpResponse('falied')
+    form.save()
+    return redirect('/streeTunes/dashboard/')
+
+    # else:
+    #     # Error
+    #     print(form.errors)
+    #     return HttpResponse('falied')
 
 
 @login_required
