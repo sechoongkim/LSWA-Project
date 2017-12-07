@@ -142,8 +142,9 @@ def upload(request):
         #     }, request.FILES)
 
         # if form.is_valid():
-        album = Album.objects.get(_id=request.POST['album_id'])
-        set_user_for_sharding(album, musician_id)
+        album_query = Album.objects
+        set_user_for_sharding(album_query, musician_id)
+        album_query.get(_id=request.POST['album_id'])
 
         new_song = Song(
         musician_id= musician_id,
