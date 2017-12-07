@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^qr/(?P<pid>\w+)$', views.qr, name='qr'),
     url('^', include('django.contrib.auth.urls')),
     url(r'^analytics/$', views.analytics, name='analytics'),
+    url(r'^stream/$', views.stream, name='stream'),
 ]
 
 

@@ -186,6 +186,14 @@ def analytics(request):
     print(purchases)
     return render(request, 'web/analytics.html', {'purchases':purchases})
 
+@login_required
+def stream(request):
+    song_id = request.POST['song_id']
+    song = Song.objects.get(title=song_id)
+    filename = os.path.join(settings.MEDIA_ROOT, str(song.media))
+    response = HttpResponse(open(filename, 'rb').read(), content_type='audio/mpeg3')
+    return response
+
 ################################################################################
 # Helper functions:
 def createZip(album):
