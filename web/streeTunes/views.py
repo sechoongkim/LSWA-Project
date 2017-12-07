@@ -153,7 +153,7 @@ def upload(request):
         title= request.POST['title'],
         media= request.FILES['media']
         )
-        set_user_for_sharding(new_song, musician_id)
+        # set_user_for_sharding(new_song, musician_id)
         new_song.save()
         return redirect('/streeTunes/dashboard/')
         # else:
