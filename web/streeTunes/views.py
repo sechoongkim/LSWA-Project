@@ -134,16 +134,23 @@ def upload(request):
         musician_id = request.user.profile.musician_id
         song_id = findId(Song, 32, musician_id, False)
 
-        form = UploadFileForm({
-            'musician_id': musician_id,
-            'album_id': request.POST['album_id'],
-            '_id': song_id,
-            'title': request.POST['title'],
-            }, request.FILES)
+        # form = UploadFileForm({
+        #     'musician_id': musician_id,
+        #     'album_id': request.POST['album_id'],
+        #     '_id': song_id,
+        #     'title': request.POST['title'],
+        #     }, request.FILES)
 
         # if form.is_valid():
-        set_user_for_sharding(form, musician_id)
-        form.save()
+        new_song = Song(
+        'musician_id': musician_id,
+        'album_id': request.POST['album_id'],
+        '_id': song_id,
+        'title': request.POST['title'],
+        'media': request.FILES['media']
+        )
+        set_user_for_sharding(new_song, musician_id)
+        new_song.save()
         return redirect('/streeTunes/dashboard/')
         # else:
         #     #Error
