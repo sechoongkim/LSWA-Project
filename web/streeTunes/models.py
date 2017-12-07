@@ -114,7 +114,8 @@ class Song(models.Model):
     title = models.CharField(max_length=50)
     musician_id = models.CharField(max_length=16)
     media = models.FileField(upload_to=user_directory_path)
-    _hints = models.CharField(max_length=16)
+    class hints:
+        user_id = ''
     pass
 
 
