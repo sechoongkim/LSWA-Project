@@ -34,6 +34,9 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
+#uncomment below when ready for testing... only blocks for 1 min
+#raise to 31536000  (1 year) when all functionality ok at 60
+#SECURE_HSTS_SECONDS = 60
 
 INSTALLED_APPS = [
     'streeTunes.apps.StreetunesConfig',
