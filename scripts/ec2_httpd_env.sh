@@ -47,7 +47,7 @@ apt-get install ca-certificates
 apt-get install curl
 apt-get install software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 apt-get install docker-ce
 source run_docker_dbs.sh
 ./install_db.sh
@@ -61,11 +61,21 @@ python manage.py migrate --database db1
 python manage.py migrate --database db2
 python manage.py collectstatic --noinput
 
+# Make directory for user created content (uploads and zips)
+cd ../
+mkdir uploads
+chgrp -R www-data uploads/
+chmod -R g+w uploads/
+mkdir zips
+chgrp -R www-data zips/
+chmod -R g+w zips/
+
+
 # Use the following config.
 cat <<EOF > /etc/apache2/sites-available/web.conf
 WSGIScriptAlias / /var/www/site/web/web/wsgi.py
-WSGIDaemonProcess web python-path=/var/www/site/web:/var/www/site/depot/env/lib/python2.7/site-packages
-WSGIProcessGroup web
+WSGIDaemonProcess scalica python-path=/var/www/site/web:/var/www/site/depot/env/lib/python2.7/site-packages
+WSGIProcessGroup scalica
 <Directory /var/www/site/web/web>
   <Files wsgi.py>
     Require all granted
@@ -78,6 +88,6 @@ Alias /static/ /var/www/site/static/
 </Directory>
 
 EOF
-a2ensite web
+a2ensite scalica
 service apache2 reload
 # We should be able to serve now.
