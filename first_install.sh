@@ -1,6 +1,6 @@
 #!/bin/bash
 set +x
-virtualenv env -p python3
+virtualenv env
 source ./env/bin/activate
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 deactivate

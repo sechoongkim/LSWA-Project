@@ -1,13 +1,13 @@
 #!/bin/bash
 
-sql_file=streeTunes.sql
+sql_file=scalica.sql
 
 set -x
 
 if [ $# -gt 0 ]; then
   case $1 in
     "remove")
-      sql_file=remove_streeTunes.sql
+      sql_file=remove_scalica.sql
       ;;
     *)
       echo "unknown command: $1"

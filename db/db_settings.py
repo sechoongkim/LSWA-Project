@@ -3,7 +3,7 @@ DATABASES = {
   'default': { },
   'auth_db': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'streeTunes',
+    'NAME': 'scalica',
     'USER': 'appserver',
     'PASSWORD': 'foobarzoot',
     'HOST': '172.17.0.2',
@@ -11,7 +11,7 @@ DATABASES = {
   },
   'db1': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'streeTunes',
+    'NAME': 'scalica',
     'USER': 'appserver',
     'PASSWORD': 'foobarzoot',
     'HOST': '172.17.0.3',
@@ -19,7 +19,7 @@ DATABASES = {
   },
   'db2': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'streeTunes',
+    'NAME': 'scalica',
     'USER': 'appserver',
     'PASSWORD': 'foobarzoot',
     'HOST': '172.17.0.4',

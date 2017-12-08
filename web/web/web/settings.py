@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,7 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+)
 
 ROOT_URLCONF = 'web.urls'
 
@@ -81,23 +82,13 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# Database
-# DATABASES = {
-#   'default': {
-#     'ENGINE': 'django.db.backends.mysql',
-#     'OPTIONS': {
-#       'read_default_file': os.path.join(BASE_DIR, '..', 'LSWA-Project', 'db', 'my.cnf'),
-#     },
-#   }
-# }
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-exec(open(os.path.join(BASE_DIR, '..', 'db', 'db_settings.py')).read())
+execfile(os.path.join(BASE_DIR, '..', 'depot', 'db', 'db_settings.py'))
 
 
 # Password validation
@@ -142,8 +133,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/site/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
-ZIP_ROOT = os.path.join(BASE_DIR, 'zips')
+MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'uploads')
+ZIP_ROOT = os.path.join(BASE_DIR, '..', 'zips')
 
 LOGIN_URL = '/streeTunes/login/'
 LOGIN_REDIRECT_URL = '/streeTunes/dashboard'

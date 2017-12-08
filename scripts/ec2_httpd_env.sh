@@ -3,13 +3,10 @@
 apt-get update -y
 apt-get install gcc -y
 apt-get install git -y
-# apt-get install python-dev python-pip -y
+apt-get install python-dev python-pip -y
 apt-get install apache2 apache2-dev -y
 apt-get install libmysqlclient-dev -y
 apt-get install python-virtualenv -y
-apt-get install python3-dev -y
-apt-get install python3-setuptools -y
-easy_install3 pip
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get -q -y install mysql-server -y
@@ -18,10 +15,10 @@ mkdir /home/ubuntu/tmp
 chmod -R 777 /home/ubuntu/tmp
 
 # In working dir
-wget https://github.com/GrahamDumpleton/mod_wsgi/archive/4.5.22.tar.gz
-tar xzvf 4.5.22.tar.gz
-cd mod_wsgi-4.5.22/
-./configure --with-python=python3.4
+wget https://github.com/GrahamDumpleton/mod_wsgi/archive/4.4.13.tar.gz
+tar xzvf 4.4.13.tar.gz
+cd mod_wsgi-4.4.13/
+./configure
 make
 make install
 # Enable the module
@@ -44,21 +41,25 @@ cd depot
 git checkout new-deployment
 ./first_install.sh
 cd db
-curl -sSL https://get.docker.com/ | sh
-source ./run_docker_dbs.sh
-start_docker_dbs
-for (( i = 1 ; i <= 60 ; i++ )); do
-  sleep 1
+# Install Docker Using Repository: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository
+apt-get install apt-transport-https
+apt-get install ca-certificates
+apt-get install curl
+apt-get install software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get install docker-ce
+source run_docker_dbs.sh
 ./install_db.sh
 cd ../../
 source depot/env/bin/activate
-mv depot/web/web web
+mv depot/web/web/ web
 cd web
-python3 manage.py makemigrations
-python3 manage.py migrate --database auth_db
-python3 manage.py migrate --database db1
-python3 manage.py migrate --database db2
-python3 manage.py collectstatic --noinput
+python manage.py makemigrations
+python manage.py migrate --database auth_db
+python manage.py migrate --database db1
+python manage.py migrate --database db2
+python manage.py collectstatic --noinput
 
 # Use the following config.
 cat <<EOF > /etc/apache2/sites-available/web.conf
