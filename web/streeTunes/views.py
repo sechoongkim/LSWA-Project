@@ -14,6 +14,7 @@ import hashlib
 def index(request):
     return render(request, 'web/index.html')
 
+@login_required
 def scan(request):
     return render(request, 'web/scan.html', {'username': request.user.username})
 
@@ -61,6 +62,10 @@ def signup(request):
         return HttpResponseNotFound()
     pass
 
+@login_required
+def logout_view(request):
+    logout(request)
+    redirect('/streeTunes')
 
 @login_required
 def profile(request):
@@ -169,6 +174,7 @@ def qr(request, pid):
         return HttpResponseNotFound()
     return render(request, 'web/qr.html', {'username': request.user.username, 'purchase_id': pid})
 
+@login_required
 def analytics(request):
     if "genre" in request.GET:
         genres = request.GET.getlist('genre')

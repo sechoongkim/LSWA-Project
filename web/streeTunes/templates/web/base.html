@@ -53,7 +53,7 @@
             <nav id="sidebar">
                 <div class="sidebar-header">
                     <h3>StreeTunes</h3>
-                    <span><img src="{% static 'disc.png' %}" width="140" height="140"></span>
+                    <span><a href='{% url "streeTunes:dashboard" %}'><img src="{% static 'disc.png' %}" width="140" height="140"></a></span>
 
                 </div>
 
@@ -95,7 +95,8 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
                             {% if username %}
-                                <div>Welcome {{user.username}}</div>
+                                <li><div style="margin-top: 15px">Welcome {{user.username}}</div></li>
+                                <li><a href='{% url "streeTunes:logout" %}'>Logout</a></li>
                             {% endif %}
                             {% if username == null %}
                                 <li><a href='{% url "streeTunes:login" %}'>Login</a></li>
