@@ -14,9 +14,8 @@ import hashlib
 def index(request):
     return render(request, 'web/index.html')
 
-@login_required
 def scan(request):
-    return render(request, 'web/scan.html', {'username': request.user.username})
+    return render(request, 'web/scan.html')
 
 def download(request):
     downloadKey = request.GET['dl']
@@ -174,7 +173,6 @@ def qr(request, pid):
         return HttpResponseNotFound()
     return render(request, 'web/qr.html', {'username': request.user.username, 'purchase_id': pid})
 
-@login_required
 def analytics(request):
     if "genre" in request.GET:
         genres = request.GET.getlist('genre')
@@ -190,7 +188,7 @@ def analytics(request):
         gender = ['Male', 'Female', None]
     purchases = Purchase.objects.filter(fulfilled=True, musician_id__genre__in=genres, musician_id__gender__in = gender, time__week_day__in=weekday)
     print(purchases)
-    return render(request, 'web/analytics.html', {'username': request.user.username, 'purchases':purchases})
+    return render(request, 'web/analytics.html', {'purchases':purchases})
 
 ################################################################################
 # Helper functions:
