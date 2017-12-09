@@ -12,9 +12,9 @@
     <form action='/streeTunes/profile/' method='post'>
         {% csrf_token %}
 
-        <h2>Upadte your profile:</h2>
-        <input type="radio" name="gender" value="Male">Male</radio>
-        <input type="radio" name="gender" value="Female">Female</radio>
+        <h2>Update your profile:</h2>
+        <input type="radio" name="gender" value="Male">  Male</radio>
+        <input type="radio" name="gender" value="Female">  Female</radio>
         <input type="number" max="100" min="0" name='age' placeholder="age" />
         <select name="genre">
             <option {% if profile.genre == "jazz" %} selected {% endif %} value="jazz">jazz</option>
